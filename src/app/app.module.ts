@@ -3,8 +3,9 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { LinearInterpolationModule } from './linear-interpolation/linear-interpolation.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 
+import {MatIconModule} from '@angular/material/icon';
 @NgModule({
   declarations: [
     AppComponent
@@ -12,7 +13,8 @@ import { LinearInterpolationModule } from './linear-interpolation/linear-interpo
   imports: [
     BrowserModule,
     AppRoutingModule,
-    LinearInterpolationModule
+    MatIconModule,
+    DashboardModule
   ],
   providers: [],
   bootstrap: [AppComponent]

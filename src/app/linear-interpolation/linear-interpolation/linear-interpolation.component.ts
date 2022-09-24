@@ -1,5 +1,11 @@
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
-import { fromEvent } from 'rxjs';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnDestroy,
+  ViewChild,
+} from '@angular/core';
+import { fromEvent, Subscription } from 'rxjs';
 
 type vPoint = {
   x: number;
@@ -19,7 +25,7 @@ type MouseEvents = {
 @Component({
   templateUrl: './linear-interpolation.component.html',
 })
-export class LinearInterpolationComponent implements AfterViewInit {
+export class LinearInterpolationComponent implements AfterViewInit, OnDestroy {
   @ViewChild('canvas', { static: false })
   canvas!: ElementRef<HTMLCanvasElement>;
 
@@ -33,25 +39,36 @@ export class LinearInterpolationComponent implements AfterViewInit {
   private pink: Color = { r: 255, g: 105, b: 180 };
   private purple: Color = { r: 148, g: 0, b: 211 };
 
+  private subscriptions: Subscription = new Subscription();
   constructor() {
-    fromEvent(document, 'mousemove').subscribe((e: any) => {
-      this.mouse = {
-        mouseX: e.clientX,
-        mouseY: e.clientY,
-      };
-    });
-    fromEvent(document, 'click').subscribe((e) => {
-      if (this.audioContext == null) {
-        this.audioContext = new AudioContext();
-        this.oscilator = this.audioContext.createOscillator();
-        this.oscilator.frequency.value = 200;
-        this.oscilator.start();
-        const node = this.audioContext.createGain();
-        node.gain.value = 0.1;
-        this.oscilator.connect(node);
-        node.connect(this.audioContext.destination);
-      }
-    });
+    this.subscriptions.add(
+      fromEvent(document, 'mousemove').subscribe((e: any) => {
+        this.mouse = {
+          mouseX: e.clientX,
+          mouseY: e.clientY,
+        };
+      })
+    );
+    this.subscriptions.add(
+      fromEvent(document, 'click').subscribe((e) => {
+        if (this.audioContext == null) {
+          this.audioContext = new AudioContext();
+          this.oscilator = this.audioContext.createOscillator();
+          this.oscilator.frequency.value = 321;
+          this.oscilator.start();
+          const node = this.audioContext.createGain();
+          node.gain.value = 0.1;
+          this.oscilator.connect(node);
+          node.connect(this.audioContext.destination);
+        }
+      })
+    );
+  }
+  ngOnDestroy(): void {
+    this.canvas.nativeElement.remove();
+    this.subscriptions.unsubscribe();
+    this.audioContext?.close();
+    this.oscilator?.disconnect();
   }
 
   ngAfterViewInit(): void {
@@ -61,10 +78,12 @@ export class LinearInterpolationComponent implements AfterViewInit {
       mouseX: this.canvas.nativeElement.width / 2,
       mouseY: this.canvas.nativeElement.height / 2,
     };
-    fromEvent(window, 'resize').subscribe((e) => {
-      this.resizeCanvas();
-      this.drawLerp();
-    });
+    this.subscriptions.add(
+      fromEvent(window, 'resize').subscribe((e) => {
+        this.resizeCanvas();
+        this.drawLerp();
+      })
+    );
 
     this.drawLerp();
   }

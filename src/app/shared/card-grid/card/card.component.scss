@@ -1,0 +1,36 @@
+.grid {
+    max-width: 1200px;
+    margin: auto;
+    padding-bottom: 50px;
+}
+
+.grid h4 {
+    padding-bottom: 20px;
+}
+
+.grid-cards div {
+    background-color: #453381;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.grid-cards div h3,
+.grid-cards div small {
+    text-transform: capitalize;
+}
+
+.grid-cards-inner {
+    display: flex;
+}
+
+.grid-cards-inner:hover {
+    cursor: pointer;
+}
+
+.grid-cards-inner i {
+    font-size: 24px;
+}
+
+.grid-cards-inner p {
+    padding-top: 10px;
+}
