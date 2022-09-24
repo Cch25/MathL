@@ -9,6 +9,13 @@ const routes: Routes = [
         (m) => m.LinearInterpolationModule
       ),
   },
+  {
+    path: 'following-eyes',
+    loadChildren: () =>
+      import('./following-eyes/following-eyes.module').then(
+        (m) => m.FollowingEyesModule
+      ),
+  },
 ];
 
 @NgModule({

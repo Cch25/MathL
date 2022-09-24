@@ -16,7 +16,7 @@ export class BaseCanvas {
 
   protected initializeCanvas(
     baseCanvas: ElementRef<HTMLCanvasElement>,
-    callback: () => void
+    draw: () => void
   ): void {
     this.baseCanvas = baseCanvas.nativeElement;
     this.context = this.baseCanvas.getContext('2d')!;
@@ -27,10 +27,10 @@ export class BaseCanvas {
     this.subscriptions.add(
       fromEvent(window, 'resize').subscribe((e) => {
         this.resizeCanvas();
-        callback();
+        draw();
       })
     );
-    callback();
+    draw();
   }
 
   private getMousePosition(): void {
