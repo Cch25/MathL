@@ -108,7 +108,7 @@ export class LinearInterpolationComponent
   }
 
   ngOnDestroy(): void {
-    this.dispose();
+    this.disposeCanvas();
     this.subscriptions.unsubscribe();
     this.audioContext?.close();
     this.oscilator?.disconnect();

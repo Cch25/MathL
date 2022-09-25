@@ -68,7 +68,7 @@ export class FollowingEyesComponent
   }
 
   ngOnDestroy(): void {
-    this.dispose();
+    this.disposeCanvas();
     this.subscriptions.unsubscribe();
   }
 }

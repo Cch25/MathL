@@ -52,7 +52,7 @@ export abstract class BaseCanvas {
     );
   }
 
-  protected dispose(): void {
+  protected disposeCanvas(): void {
     this.canvas.nativeElement.remove();
     this.subscriptions.unsubscribe();
   }

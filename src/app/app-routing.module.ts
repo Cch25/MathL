@@ -16,6 +16,13 @@ const routes: Routes = [
         (m) => m.FollowingEyesModule
       ),
   },
+  {
+    path: 'bezier-curves',
+    loadChildren: () =>
+      import('./bezier-curves/bezier-curves.module').then(
+        (m) => m.BezierCurvesModule
+      ),
+  },
 ];
 
 @NgModule({
