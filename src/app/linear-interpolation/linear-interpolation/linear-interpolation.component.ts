@@ -38,15 +38,14 @@ export class LinearInterpolationComponent
 
   constructor() {
     super();
-
     this.initializeAudioOnClick();
   }
 
   ngAfterViewInit(): void {
-    this.initializeCanvas(this.canvas, this.drawLerp.bind(this));
+    this.setupCanvas();
   }
 
-  private drawLerp(): void {
+  protected draw(): void {
     this.context.clearRect(0, 0, this.WIDTH, this.HEIGHT);
     // const sec = new Date().getTime() / 1000;
     // const step = sec - Math.floor(sec);
@@ -74,8 +73,6 @@ export class LinearInterpolationComponent
         step
       );
     }
-
-    requestAnimationFrame(this.drawLerp.bind(this));
   }
 
   private drawPoint(point: vPoint, size: number, label?: string) {

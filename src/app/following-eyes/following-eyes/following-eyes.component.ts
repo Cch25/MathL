@@ -19,24 +19,21 @@ export class FollowingEyesComponent
   canvas!: ElementRef<HTMLCanvasElement>;
 
   ngAfterViewInit(): void {
-    this.initializeCanvas(this.canvas, () => this.draw());
+    this.setupCanvas();
     this.loadGoopher();
   }
 
-  private draw(): void {
+  protected draw(): void {
     const angle = this.getAngle();
     this.makeEyesFollow(angle);
-
-    requestAnimationFrame(this.draw.bind(this));
   }
 
   private makeEyesFollow(angle: number): void {
     this.context.clearRect(this.WIDTH / 2 - 25, this.HEIGHT / 2 - 55, 15, 15);
     this.context.clearRect(this.WIDTH / 2 + 6, this.HEIGHT / 2 - 55, 14, 14);
-    
 
     this.drawEye(this.WIDTH / 2 - 16, this.HEIGHT / 2 - 50);
-    this.drawEye(this.WIDTH / 2 + 16, this.HEIGHT / 2 - 50); 
+    this.drawEye(this.WIDTH / 2 + 16, this.HEIGHT / 2 - 50);
   }
 
   private drawEye(dx: number, dy: number) {
