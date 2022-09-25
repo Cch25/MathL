@@ -20,28 +20,28 @@ export class FollowingEyesComponent
 
   ngAfterViewInit(): void {
     this.initializeCanvas(this.canvas, () => this.draw());
+    this.loadGoopher();
   }
 
   private draw(): void {
     const angle = this.getAngle();
-    this.loadGoopher();
-    this.addEyes();
     this.makeEyesFollow(angle);
+
     requestAnimationFrame(this.draw.bind(this));
   }
 
   private makeEyesFollow(angle: number): void {
-    //to do.
-  }
+    this.context.clearRect(this.WIDTH / 2 - 25, this.HEIGHT / 2 - 55, 15, 15);
+    this.context.clearRect(this.WIDTH / 2 + 6, this.HEIGHT / 2 - 55, 14, 14);
+    
 
-  private addEyes(): void {
     this.drawEye(this.WIDTH / 2 - 16, this.HEIGHT / 2 - 50);
-    this.drawEye(this.WIDTH / 2 + 16, this.HEIGHT / 2 - 50);
+    this.drawEye(this.WIDTH / 2 + 16, this.HEIGHT / 2 - 50); 
   }
 
-  private drawEye(dx: number, dy: number, offset: number = 0) {
+  private drawEye(dx: number, dy: number) {
     this.context.beginPath();
-    this.context.arc(dx + offset, dy + offset, 2, 0, Math.PI * 2);
+    this.context.arc(dx, dy, 2, 0, Math.PI * 2);
     this.context.fill();
     this.context.stroke();
     this.context.closePath();
@@ -62,12 +62,25 @@ export class FollowingEyesComponent
   private getAngle(): number {
     const dx = this.mouseX - this.WIDTH / 2;
     const dy = this.mouseY - this.HEIGHT / 2;
-    const angle = Math.atan2(dy, dx);
-    return angle;
+    const radianDegrees = Math.atan2(dy, dx);
+    return radianDegrees * (180 / Math.PI);
+  }
+
+  private getDistance(a: Vector, b: Vector): number {
+    return Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2));
   }
 
   ngOnDestroy(): void {
     this.dispose();
     this.subscriptions.unsubscribe();
+  }
+}
+
+export class Vector {
+  public x!: number;
+  public y!: number;
+  constructor(x: number, y: number) {
+    this.x = x;
+    this.y = y;
   }
 }
