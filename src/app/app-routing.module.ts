@@ -23,6 +23,13 @@ const routes: Routes = [
         (m) => m.BezierCurvesModule
       ),
   },
+  {
+    path: 'snap-to-grid',
+    loadChildren: () =>
+      import('./snap-to-grid/snap-to-grid.module').then(
+        (m) => m.SnapToGridModule
+      ),
+  },
 ];
 
 @NgModule({
