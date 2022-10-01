@@ -1,0 +1,5 @@
+<div class="d-flex">
+    <ng-container *ngFor="let segment of segments">
+        <div [style.width]="segment.width" [style.backgroundColor]="segment.color" [style.height]="segment.height" [style.marginTop]="segment.marginTop" [barhover]="options"></div>
+    </ng-container>
+</div>

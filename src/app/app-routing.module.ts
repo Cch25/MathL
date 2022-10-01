@@ -30,6 +30,13 @@ const routes: Routes = [
         (m) => m.SnapToGridModule
       ),
   },
+  {
+    path: 'visualizers',
+    loadChildren: () =>
+      import('./visualizers/visualizers.module').then(
+        (m) => m.VisualizerModule
+      ),
+  },
 ];
 
 @NgModule({
