@@ -22,7 +22,7 @@ export type ChartDetails = {
 
 @Component({
   selector: 'mathL-bar-chart',
-  styleUrls:['./bar-chart.component.scss'],
+  styleUrls: ['./bar-chart.component.scss'],
   templateUrl: './bar-chart.component.html',
 })
 export class BarChartComponent implements AfterViewInit {
@@ -50,15 +50,34 @@ export class BarChartComponent implements AfterViewInit {
     const cf = this.cfr.resolveComponentFactory(BarTemplateComponent);
     const cRef1: ComponentRef<BarTemplateComponent> = cf.create(this.injector);
     cRef1.instance.data = data;
-    if (!this.details!.options) {
-      this.details!.options = {
-        barHeightInPx: 8,
-        barMarginTopInPx: 2,
-      };
-    }
-    cRef1.instance.options = this.details!.options;
+    const options = this.ensureOptionsAreInitialized(this.details!.options);
+    cRef1.instance.options = options;
     cRef1.changeDetectorRef.detectChanges();
     this.insertPoint.insert(cRef1.hostView);
+  }
+
+  private ensureOptionsAreInitialized(options?: ChartOptions): ChartOptions {
+    if (options == null) {
+      return {
+        barSpaceInPx: 0,
+        barWidthInPx: 8,
+        mode: 'inline',
+      };
+    }
+    return {
+      barSpaceInPx: this.checkAndInitializeProperty('barSpaceInPx', 0),
+      barWidthInPx: this.checkAndInitializeProperty('barWidthInPx', 8),
+      mode: this.checkAndInitializeProperty('mode', 'inline'),
+    };
+  }
+
+  private checkAndInitializeProperty(
+    prop: keyof ChartOptions,
+    withValue: any
+  ): any {
+    return this.details!.options![prop] == null
+      ? withValue
+      : this.details!.options![prop];
   }
 
   ngOnDestroy() {

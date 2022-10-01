@@ -19,16 +19,15 @@ export class BubleSortComponent implements OnInit {
       },
       {
         values: [6, 4],
-        colors: ['fuchsia','darkgreen'],
+        colors: ['fuchsia', 'darkgreen'],
       },
       {
         values: [5, 2],
-        colors: ['darkred','blue'],
+        colors: ['darkred', 'blue'],
       },
     ],
     options: {
-      barMarginTopInPx: 2,
-      barHeightInPx: 10,
+      barSpaceInPx: 5
     },
   };
   constructor() {}

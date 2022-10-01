@@ -6,6 +6,7 @@ type Segment = {
   width: string;
   height: string;
   marginTop: string;
+  marginRight: string;
 };
 
 export type ChartData = {
@@ -14,13 +15,14 @@ export type ChartData = {
 };
 
 export type ChartOptions = {
-  barHeightInPx: number;
-  barMarginTopInPx: number;
+  barWidthInPx?: number;
+  barSpaceInPx?: number;
+  mode?: 'inline' | 'stack';
 };
 
 @Component({
   selector: 'mathL-bar-template',
-  styleUrls:['./bar-template.component.scss'],
+  styleUrls: ['./bar-template.component.scss'],
   templateUrl: './bar-template.component.html',
 })
 export class BarTemplateComponent implements AfterViewInit {
@@ -33,15 +35,30 @@ export class BarTemplateComponent implements AfterViewInit {
     const total = this.data.values.reduce((acc, val) => acc + val, 0);
     for (let i = 0; i < this.data.values.length; i++) {
       const percentage = (this.data.values[i] / total) * 100;
-      this.segments.push({
-        color:
-          this.data.colors[i] ?? 'black',
-        height: `${this.options!.barHeightInPx}px`,
-        marginTop: `${this.options!.barMarginTopInPx}px`,
+      this.segments.push(this.buildSegment(this.data.colors[i], percentage));
+    }
+  }
+
+  //todo refactor
+  private buildSegment(color: string, percentage: number): Segment {
+    if (this.options.mode === 'stack') {
+      return {
+        color: color ?? 'black',
+        height: `${this.options!.barWidthInPx}px`,
+        marginTop: `0px`,
         percentage: percentage,
         width: `${percentage}%`,
-      });
+        marginRight: `${this.options!.barSpaceInPx}px`,
+      };
     }
+    return {
+      color: color ?? 'black',
+      height: `${percentage}%`,
+      percentage: percentage,
+      width: `${this.options!.barWidthInPx}px`,
+      marginTop: `${this.options!.barSpaceInPx}px`,
+      marginRight: `0px`,
+    };
   }
 
   private get randomColor(): string {

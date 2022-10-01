@@ -1,1 +1,7 @@
-<ng-container #insertPoint> </ng-container>
+<div *ngIf="details!.options?.mode==='stack';else inline" class="d-flex w-100 h-100">
+    <ng-container #insertPoint> </ng-container>
+</div>
+
+<ng-template #inline>
+    <ng-container #insertPoint> </ng-container>
+</ng-template>
