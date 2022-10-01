@@ -3,7 +3,10 @@
 }
 
 .stack {
-    flex-direction: column;
+    // flex-direction: column-reverse;
+    flex-direction: row-reverse;
+    align-items: flex-end;
+    //for cluster
     width: 100%;
     height: 100%;
 }

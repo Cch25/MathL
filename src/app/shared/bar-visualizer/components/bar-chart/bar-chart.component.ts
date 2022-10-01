@@ -6,6 +6,8 @@ import {
   ElementRef,
   Injector,
   Input,
+  OnChanges,
+  SimpleChanges,
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
@@ -16,7 +18,7 @@ import {
 } from '../bar-template/bar-template.component';
 
 export type ChartDetails = {
-  data: ChartData[];
+  data: ChartData[] | Array<number>;
   options?: ChartOptions;
 };
 
@@ -25,7 +27,7 @@ export type ChartDetails = {
   styleUrls: ['./bar-chart.component.scss'],
   templateUrl: './bar-chart.component.html',
 })
-export class BarChartComponent implements AfterViewInit {
+export class BarChartComponent implements AfterViewInit, OnChanges {
   @Input() details: ChartDetails | undefined;
   @ViewChild('barChart')
   barChart!: ElementRef;
@@ -36,17 +38,35 @@ export class BarChartComponent implements AfterViewInit {
     private cfr: ComponentFactoryResolver,
     private injector: Injector
   ) {}
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['details'].firstChange === false && this.details) {
+      for (const data of this.details.data) {
+        if (data instanceof CharacterData) {
+          this.drawBar(data as ChartData);
+        } else {
+          this.drawBar(this.details.data as Array<number>);
+          break;
+        }
+      }
+    }
+  }
 
   ngAfterViewInit(): void {
     if (this.details) {
       for (const data of this.details.data) {
-        this.drawBar(data);
+        if (data instanceof CharacterData) {
+          this.drawBar(data as ChartData);
+        } else {
+          this.drawBar(this.details.data as Array<number>);
+          break;
+        }
       }
     }
   }
 
   //Maybe not needed, mostly made as an experiment
-  private drawBar(data: ChartData): void {
+  private drawBar(data: ChartData | Array<number>): void {
+    this.insertPoint.clear();
     const cf = this.cfr.resolveComponentFactory(BarTemplateComponent);
     const cRef1: ComponentRef<BarTemplateComponent> = cf.create(this.injector);
     cRef1.instance.data = data;

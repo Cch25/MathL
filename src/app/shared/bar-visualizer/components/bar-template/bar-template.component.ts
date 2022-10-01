@@ -1,4 +1,7 @@
-import { AfterViewInit, Component, Input } from '@angular/core';
+import {
+  AfterViewInit,
+  Component, 
+} from '@angular/core';
 
 type Segment = {
   percentage: number;
@@ -17,7 +20,7 @@ export type ChartData = {
 export type ChartOptions = {
   barWidthInPx?: number;
   barSpaceInPx?: number;
-  mode?: 'inline' | 'stack';
+  mode?: 'inline' | 'stack' | 'clustered';
   align?: 'left' | 'center' | 'right';
 };
 
@@ -27,16 +30,26 @@ export type ChartOptions = {
   templateUrl: './bar-template.component.html',
 })
 export class BarTemplateComponent implements AfterViewInit {
-  public data!: ChartData;
+  public data!: ChartData | Array<number>;
   public options!: ChartOptions;
 
   public segments: Segment[] = [];
+ 
 
   ngAfterViewInit(): void {
-    const total = this.data.values.reduce((acc, val) => acc + val, 0);
-    for (let i = 0; i < this.data.values.length; i++) {
-      const percentage = (this.data.values[i] / total) * 100;
-      this.segments.push(this.buildSegment(this.data.colors[i], percentage));
+    //for now just replace stacked, but refactor to clustered after
+    // const total = this.data.values.reduce((acc, val) => acc + val, 0);
+    // for (let i = 0; i < this.data.values.length; i++) {
+    //   const percentage = (this.data.values[i] / total) * 100;
+    //   this.segments.push(
+    //     this.buildSegment(this.data.colors[i], percentage)
+    //   );
+    // }
+    const total = 14;
+    const data = this.data as Array<number>;
+    for (let i = 0; i < data.length; i++) {
+      const percentage = (data[i] / total) * 100;
+      this.segments.push(this.buildSegment('black', percentage));
     }
   }
 
