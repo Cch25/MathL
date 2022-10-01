@@ -62,12 +62,14 @@ export class BarChartComponent implements AfterViewInit {
         barSpaceInPx: 0,
         barWidthInPx: 8,
         mode: 'inline',
+        align: 'left',
       };
     }
     return {
       barSpaceInPx: this.checkAndInitializeProperty('barSpaceInPx', 0),
       barWidthInPx: this.checkAndInitializeProperty('barWidthInPx', 8),
       mode: this.checkAndInitializeProperty('mode', 'inline'),
+      align: this.checkAndInitializeProperty('align', 'left'),
     };
   }
 

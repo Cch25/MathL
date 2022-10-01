@@ -27,7 +27,8 @@ export class BubleSortComponent implements OnInit {
       },
     ],
     options: {
-      barSpaceInPx: 5
+      barSpaceInPx: 5,
+      align: 'center',
     },
   };
   constructor() {}

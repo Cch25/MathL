@@ -18,6 +18,7 @@ export type ChartOptions = {
   barWidthInPx?: number;
   barSpaceInPx?: number;
   mode?: 'inline' | 'stack';
+  align?: 'left' | 'center' | 'right';
 };
 
 @Component({

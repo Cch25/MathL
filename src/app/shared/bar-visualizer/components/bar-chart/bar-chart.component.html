@@ -1,4 +1,5 @@
-<div *ngIf="details!.options?.mode==='stack';else inline" class="d-flex w-100 h-100">
+<div *ngIf="details!.options?.mode==='stack';else inline" [class.justify-content-start]="details!.options?.align === 'left'" [class.justify-content-center]="details!.options?.align === 'center'" [class.justify-content-end]="details!.options?.align === 'right'"
+    class="d-flex w-100 h-100">
     <ng-container #insertPoint> </ng-container>
 </div>
 
