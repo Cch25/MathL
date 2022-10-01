@@ -22,6 +22,7 @@ export type ChartDetails = {
 
 @Component({
   selector: 'mathL-bar-chart',
+  styleUrls:['./bar-chart.component.scss'],
   templateUrl: './bar-chart.component.html',
 })
 export class BarChartComponent implements AfterViewInit {

@@ -13,6 +13,18 @@ export class BubleSortComponent implements OnInit {
         values: [1, 2],
         colors: ['orange'],
       },
+      {
+        values: [3, 1],
+        colors: ['darkblue'],
+      },
+      {
+        values: [6, 4],
+        colors: ['fuchsia','darkgreen'],
+      },
+      {
+        values: [5, 2],
+        colors: ['darkred','blue'],
+      },
     ],
     options: {
       barMarginTopInPx: 2,
