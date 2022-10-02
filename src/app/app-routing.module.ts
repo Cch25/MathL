@@ -37,6 +37,11 @@ const routes: Routes = [
         (m) => m.VisualizerModule
       ),
   },
+  {
+    path: 'vectors',
+    loadChildren: () =>
+      import('./vectors/vectors.module').then((m) => m.VectorsModule),
+  },
 ];
 
 @NgModule({
