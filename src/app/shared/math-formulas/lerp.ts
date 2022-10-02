@@ -7,7 +7,7 @@ export class Lerp {
     return result;
   }
 
-  public static lerp(a: number, b: number, t: number): number {
-    return a + (b - a) * t;
+  public static lerp(min: number, max: number, norm: number): number {
+    return (max - min) * norm + min;
   }
 }

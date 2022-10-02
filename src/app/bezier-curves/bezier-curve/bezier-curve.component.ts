@@ -50,12 +50,12 @@ export class BezierCurveComponent
   }
 
   private cubic(
-    pointA: Point<number>,
-    firstMiddlePoint: Point<number>,
-    secondMiddlePoint: Point<number>,
-    pointB: Point<number>,
+    pointA: Point,
+    firstMiddlePoint: Point,
+    secondMiddlePoint: Point,
+    pointB: Point,
     t: number
-  ): Point<number> {
+  ): Point {
     const firstPoint = this.quadratic(
       pointA,
       firstMiddlePoint,
@@ -74,11 +74,11 @@ export class BezierCurveComponent
   }
 
   private quadratic(
-    pointA: Point<number>,
-    middlePoint: Point<number>,
-    pointB: Point<number>,
+    pointA: Point,
+    middlePoint: Point,
+    pointB: Point,
     t: number
-  ): Point<number> {
+  ): Point {
     const aToMiddle = Lerp.vLerp(pointA, middlePoint, t);
     const middleToB = Lerp.vLerp(middlePoint, pointB, t);
     const x = Lerp.lerp(aToMiddle.x, middleToB.x, t);
