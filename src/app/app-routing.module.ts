@@ -42,6 +42,13 @@ const routes: Routes = [
     loadChildren: () =>
       import('./vectors/vectors.module').then((m) => m.VectorsModule),
   },
+  {
+    path: 'creative-art',
+    loadChildren: () =>
+      import('./creative-art/creative-art.module').then(
+        (m) => m.CreativeArtModule
+      ),
+  },
 ];
 
 @NgModule({

@@ -24,24 +24,43 @@ export class FollowingEyesComponent
   }
 
   protected draw(): void {
-    const angle = this.getAngle();
-    this.makeEyesFollow(angle);
+    this.eyes(120, 120, 20);
   }
 
-  private makeEyesFollow(angle: number): void {
-    this.context.clearRect(this.WIDTH / 2 - 25, this.HEIGHT / 2 - 55, 15, 15);
-    this.context.clearRect(this.WIDTH / 2 + 6, this.HEIGHT / 2 - 55, 14, 14);
-
-    this.drawEye(this.WIDTH / 2 - 16, this.HEIGHT / 2 - 50);
-    this.drawEye(this.WIDTH / 2 + 16, this.HEIGHT / 2 - 50);
+  private eyes(x: number, y: number, size: number): void {
+    var rect = this.canvas.nativeElement.getBoundingClientRect();
+    this.drawEyes(rect, size);
   }
 
-  private drawEye(dx: number, dy: number) {
+  private drawEyes(rect: DOMRect, size: number): void {
+    var x = this.mouseX - rect.left,
+      y = this.mouseY - rect.top;
+    this.context.clearRect(0, 0, size * 2 + 10, size + 10);
+    this.drawEye(x, y, size / 2 + 5, size / 2 + 5, size);
+    this.drawEye(x, y, size * 1.5 + 5, size / 2 + 5, size);
+  }
+
+  private drawEye(
+    x: number,
+    y: number,
+    cx: number,
+    cy: number,
+    size: number
+  ): void {
+    var dx = x - cx,
+      dy = y - cy,
+      angle = Math.atan2(dy, dx);
+
+    this.context.save();
+    this.context.translate(cx, cy);
+    this.context.rotate(angle);
     this.context.beginPath();
-    this.context.arc(dx, dy, 2, 0, Math.PI * 2);
-    this.context.fill();
+    this.context.arc(0, 0, size / 2, 0, Math.PI * 2);
     this.context.stroke();
-    this.context.closePath();
+    this.context.beginPath();
+    this.context.arc(size * 0.4, 0, size * 0.1, 0, Math.PI * 2);
+    this.context.fill();
+    this.context.restore();
   }
 
   private loadGoopher(): void {
@@ -54,17 +73,6 @@ export class FollowingEyesComponent
       );
     };
     image.src = 'assets/goopher.png';
-  }
-
-  private getAngle(): number {
-    const dx = this.mouseX - this.WIDTH / 2;
-    const dy = this.mouseY - this.HEIGHT / 2;
-    const radianDegrees = Math.atan2(dy, dx);
-    return radianDegrees * (180 / Math.PI);
-  }
-
-  private getDistance(a: Vector, b: Vector): number {
-    return Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2));
   }
 
   ngOnDestroy(): void {
