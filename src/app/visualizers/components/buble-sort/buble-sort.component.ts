@@ -2,9 +2,7 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ChartDetails } from 'src/app/shared/bar-visualizer/components/bar-chart/bar-chart.component';
 
 @Component({
-  selector: 'mathL-buble-sort',
-  templateUrl: './buble-sort.component.html',
-  styleUrls: ['./buble-sort.component.scss'],
+  template: '<mathL-bar-chart [details]="chartDetails"></mathL-bar-chart>',
 })
 export class BubleSortComponent implements OnInit {
   chartDetails: ChartDetails = {

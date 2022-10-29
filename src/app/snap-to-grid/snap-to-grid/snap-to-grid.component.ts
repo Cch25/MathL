@@ -9,8 +9,7 @@ import { BaseCanvas } from 'src/app/shared/canvas/base-canvas';
 import { MathL } from 'src/app/shared/math-formulas/utilities';
 
 @Component({
-  selector: 'mathL-snap-to-grid',
-  templateUrl: './snap-to-grid.component.html',
+  template: '<canvas #canvas></canvas>',
 })
 export class SnapToGridComponent
   extends BaseCanvas
@@ -50,7 +49,6 @@ export class SnapToGridComponent
     this.context.fill();
     this.context.fillStyle = '#ca2c92';
     this.context.strokeStyle = '#ca2c92';
-
   }
 
   private initializeGrid(): void {
@@ -69,7 +67,7 @@ export class SnapToGridComponent
       this.context.moveTo(0, y);
       this.context.lineTo(this.WIDTH - 5, y);
     }
-    this.context.stroke(); 
+    this.context.stroke();
   }
 
   ngOnDestroy(): void {

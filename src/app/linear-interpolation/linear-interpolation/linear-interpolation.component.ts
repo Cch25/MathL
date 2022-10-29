@@ -21,7 +21,7 @@ type Color = {
 };
 
 @Component({
-  templateUrl: './linear-interpolation.component.html',
+  template: '<canvas #canvas></canvas>',
 })
 export class LinearInterpolationComponent
   extends BaseCanvas

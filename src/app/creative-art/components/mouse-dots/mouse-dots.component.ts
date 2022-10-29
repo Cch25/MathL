@@ -10,8 +10,7 @@ import { BaseCanvas } from 'src/app/shared/canvas/base-canvas';
 import { MathL } from 'src/app/shared/math-formulas/utilities';
 
 @Component({
-  selector: 'mathL-mouse-dots',
-  templateUrl: './mouse-dots.component.html',
+  template: '<canvas #canvas></canvas>',
 })
 export class MouseDotsComponent
   extends BaseCanvas

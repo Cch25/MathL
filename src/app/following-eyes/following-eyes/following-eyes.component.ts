@@ -9,7 +9,7 @@ import {
 import { BaseCanvas } from 'src/app/shared/canvas/base-canvas';
 
 @Component({
-  templateUrl: './following-eyes.component.html',
+  template: '<canvas #canvas></canvas>',
 })
 export class FollowingEyesComponent
   extends BaseCanvas

@@ -11,9 +11,7 @@ import { Lerp } from 'src/app/shared/math-formulas/lerp';
 import { Point } from 'src/app/shared/models/point';
 
 @Component({
-  selector: 'mathL-bezier-curve',
-  templateUrl: './bezier-curve.component.html',
-  styleUrls: ['./bezier-curve.component.scss'],
+  template: '<canvas #canvas></canvas>',
 })
 export class BezierCurveComponent
   extends BaseCanvas
