@@ -49,6 +49,11 @@ const routes: Routes = [
         (m) => m.CreativeArtModule
       ),
   },
+  {
+    path: 'snake',
+    loadChildren: () =>
+      import('./games/snake/snake.module').then((m) => m.SnakeModule),
+  },
 ];
 
 @NgModule({

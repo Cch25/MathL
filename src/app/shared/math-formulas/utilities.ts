@@ -27,6 +27,12 @@ export class MathL {
     return Math.sqrt(x * x + y * y);
   }
 
+  public static dist(x: number, y: number, x1: number, y1: number): number {
+    var x = x - x1;
+    var y = y - y1;
+    return Math.sqrt(x * x + y * y);
+  }
+
   public static roundToNearest(value: number, size: number): number {
     return Math.round(value / size) * size;
   }
