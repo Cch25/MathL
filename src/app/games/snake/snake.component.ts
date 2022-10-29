@@ -44,6 +44,7 @@ export class SnakeComponent
     if (this.snake.eat(this.foodPos)) {
       this.foodPos = this.snake.randomizeFood();
     }
+    this.snake.death();
     this.snake.update();
     this.snake.show();
     this.snake.drawFood(this.foodPos);
@@ -112,10 +113,12 @@ class Snake {
 
   update() {
     if (this.snake.total === this.snake.tail.length) {
-      for (var i = 0; i < this.snake.tail.length; i++) {
+      //update array to get data from the next segment
+      for (let i = 0; i < this.snake.tail.length; i++) {
         this.snake.tail[i] = this.snake.tail[i + 1];
       }
     }
+    //last segment body takes data from the head pos
     this.snake.tail[this.snake.total - 1] = {
       x: this.snake.x,
       y: this.snake.y,
@@ -132,6 +135,16 @@ class Snake {
       return true;
     }
     return false;
+  }
+
+  public death() {
+    for (const tail of this.snake.tail) {
+      var d = MathL.dist(this.snake.x, this.snake.y, tail.x, tail.y);
+      if (d < 1) {
+        this.snake.total = 1;
+        this.snake.tail = [];
+      }
+    }
   }
 
   public keyControls(event: any): void {
