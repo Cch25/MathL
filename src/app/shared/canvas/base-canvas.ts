@@ -2,6 +2,10 @@ import { ElementRef } from '@angular/core';
 import { fromEvent, Subscription } from 'rxjs';
 
 export abstract class BaseCanvas {
+  private lastTime: number = 0;
+  private interval: number = 1000 / 60;
+  private timer: number = 0;
+
   protected context!: CanvasRenderingContext2D;
   protected subscriptions: Subscription = new Subscription();
   protected WIDTH: number = 0;
@@ -16,25 +20,37 @@ export abstract class BaseCanvas {
   protected get canvasEl() {
     return this.canvas.nativeElement;
   }
- 
+
   protected setupCanvas(): void {
     this.context = this.canvas.nativeElement.getContext('2d')!;
 
     this.getMousePosition();
     this.resizeCanvas();
-
+    let animationFrame: number;
     this.subscriptions.add(
       fromEvent(window, 'resize').subscribe((e) => {
+        cancelAnimationFrame(animationFrame);
         this.resizeCanvas();
-        this.requestFrame();
+        animationFrame = this.requestFrame(0);
       })
     );
-    this.requestFrame();
+    animationFrame = this.requestFrame(0);
   }
 
-  private requestFrame(): void {
-    this.draw();
-    requestAnimationFrame(this.requestFrame.bind(this));
+  public frameRate(fps: number) {
+    this.interval = 1000 / fps;
+  }
+
+  private requestFrame(timestamp: number): number {
+    const deltaTime = timestamp - this.lastTime;
+    this.lastTime = timestamp;
+    if (this.timer >= this.interval) {
+      this.draw();
+      this.timer = 0;
+    } else {
+      this.timer += deltaTime;
+    }
+    return requestAnimationFrame(this.requestFrame.bind(this));
   }
 
   private getMousePosition(): void {

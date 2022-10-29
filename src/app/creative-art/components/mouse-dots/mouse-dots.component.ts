@@ -121,7 +121,6 @@ class Particle {
     };
     interval(2).subscribe((data) => {
       this.hue += 10;
-      console.log(this.hue % 360);
     });
   }
 
