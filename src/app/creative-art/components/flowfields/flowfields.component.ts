@@ -43,7 +43,7 @@ export class FlowFieldEffectComponent
 }
 
 class FlowFieldEffect {
-  private cellSize: number = 8;
+  private cellSize: number = 15;
   private radius: number = 0;
   private vr: number = 0.03;
 
