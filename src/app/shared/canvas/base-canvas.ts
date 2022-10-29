@@ -5,6 +5,7 @@ export abstract class BaseCanvas {
   private lastTime: number = 0;
   private interval: number = 1000 / 60;
   private timer: number = 0;
+  private animationFrame!: number;
 
   protected context!: CanvasRenderingContext2D;
   protected subscriptions: Subscription = new Subscription();
@@ -26,22 +27,22 @@ export abstract class BaseCanvas {
 
     this.getMousePosition();
     this.resizeCanvas();
-    let animationFrame: number;
     this.subscriptions.add(
       fromEvent(window, 'resize').subscribe((e) => {
-        cancelAnimationFrame(animationFrame);
+        cancelAnimationFrame(this.animationFrame);
         this.resizeCanvas();
-        animationFrame = this.requestFrame(0);
+        this.requestFrame(0);
       })
     );
-    animationFrame = this.requestFrame(0);
+    cancelAnimationFrame(this.animationFrame);
+    this.requestFrame(0);
   }
 
   public frameRate(fps: number) {
     this.interval = 1000 / fps;
   }
 
-  private requestFrame(timestamp: number): number {
+  private requestFrame(timestamp: number): void {
     const deltaTime = timestamp - this.lastTime;
     this.lastTime = timestamp;
     if (this.timer >= this.interval) {
@@ -50,7 +51,7 @@ export abstract class BaseCanvas {
     } else {
       this.timer += deltaTime;
     }
-    return requestAnimationFrame(this.requestFrame.bind(this));
+    this.animationFrame = requestAnimationFrame(this.requestFrame.bind(this));
   }
 
   private getMousePosition(): void {
@@ -69,6 +70,7 @@ export abstract class BaseCanvas {
   }
 
   protected disposeCanvas(): void {
+    cancelAnimationFrame(this.animationFrame);
     this.canvas.nativeElement.remove();
     this.subscriptions.unsubscribe();
   }

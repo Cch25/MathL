@@ -32,6 +32,19 @@ export class MouseDotsComponent
       );
     }
 
+    
+    this.subscriptions.add(
+      fromEvent(window, 'click')
+        .pipe(throttle(() => interval(60)))
+        .subscribe((data) => {
+          for (let i = 0; i < 50; i++) {
+            this.particles.push(
+              new Particle(this.context, this.mouseX, this.mouseY)
+            );
+          }
+        })
+    );
+
     this.subscriptions.add(
       fromEvent(window, 'mousemove')
         .pipe(throttle(() => interval(60)))
@@ -46,6 +59,7 @@ export class MouseDotsComponent
   }
 
   protected draw(): void {
+    console.log('running');
     this.context.fillStyle = 'black';
     this.context.fillRect(0, 0, this.WIDTH, this.HEIGHT);
     for (let i = 0; i < this.particles.length; i++) {
@@ -115,8 +129,8 @@ class Particle {
       x: mouseX,
       y: mouseY,
       size: Math.random() * 15 + 1,
-      speedX: Math.random() * 3 - 1.5,
-      speedY: Math.random() * 3 - 1.5,
+      speedX: Math.random() * 30 - 15.5,
+      speedY: Math.random() * 30 - 15.5,
     };
     interval(2).subscribe((data) => {
       this.hue += 10;

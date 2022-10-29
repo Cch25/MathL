@@ -2,10 +2,9 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
-  OnDestroy, 
+  OnDestroy,
   ViewChild,
-} from '@angular/core';
-import { fromEvent, interval, throttle } from 'rxjs';
+} from '@angular/core'; 
 import { BaseCanvas } from 'src/app/shared/canvas/base-canvas';
 
 @Component({
@@ -27,19 +26,14 @@ export class FlowFieldEffectComponent
   ngAfterViewInit(): void {
     this.setupCanvas();
 
-    this.subscriptions.add(
-      fromEvent(window, 'mousemove')
-        .pipe(throttle(() => interval(60)))
-        .subscribe((data) => {})
-    );
-
     this.flowField = new FlowFieldEffect(this.context, this.WIDTH, this.HEIGHT);
   }
 
   protected draw(): void {
+    console.log('running');
     this.context.fillStyle = 'black';
     this.context.fillRect(0, 0, this.WIDTH, this.HEIGHT);
-    this.flowField.update(this.mouseX, this.mouseY);
+    this.flowField.update(this.mouseX, this.mouseY); 
   }
 
   ngOnDestroy(): void {
@@ -54,7 +48,7 @@ class FlowFieldEffect {
   private vr: number = 0.03;
 
   constructor(
-    private readonly context: CanvasRenderingContext2D,
+    private context: CanvasRenderingContext2D,
     private readonly width: number,
     private readonly height: number
   ) {
