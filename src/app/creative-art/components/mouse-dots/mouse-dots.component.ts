@@ -32,7 +32,6 @@ export class MouseDotsComponent
       );
     }
 
-    
     this.subscriptions.add(
       fromEvent(window, 'click')
         .pipe(throttle(() => interval(60)))
@@ -151,8 +150,9 @@ class Particle {
 
   private drawCircle(): void {
     this.context.beginPath();
-    this.context.fillStyle = `hsl(${this.hue},100%,50%)`;
-    this.particle.color = `hsl(${this.hue},100%,50%)`;
+    const hue = `hsl(${this.hue},100%,50%)`;
+    this.context.fillStyle = hue;
+    this.particle.color = hue;
     this.context.arc(
       this.particle.x,
       this.particle.y,
