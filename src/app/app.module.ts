@@ -6,10 +6,12 @@ import { AppComponent } from './app.component';
 import { DashboardModule } from './dashboard/dashboard.module';
 
 import {MatIconModule} from '@angular/material/icon';
+import { ChartsComponent } from './charts/charts.component';
 
 @NgModule({
   declarations: [
     AppComponent,
+    ChartsComponent,
   ],
   imports: [
     BrowserModule,
