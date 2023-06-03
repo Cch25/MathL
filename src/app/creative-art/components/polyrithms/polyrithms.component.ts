@@ -3,23 +3,11 @@ import {
   Component,
   ElementRef,
   OnDestroy,
-  OnInit,
   ViewChild,
 } from '@angular/core';
 import { BaseCanvas } from 'src/app/shared/canvas/base-canvas';
-
-type Pos = {
-  x: number;
-  y: number;
-};
-
-type Settings = {
-  startTime: number;
-  duration: number;
-  maxCycles: number;
-  pulseEnabled: boolean;
-  instrument: 'default' | 'wave' | 'vibraphone';
-};
+import { Arc, Base, Pos, Settings } from './types/poly-type';
+import { PolyMath } from './helper/poly-math.helper';
 
 @Component({
   selector: 'mathL-polyrithms',
@@ -33,15 +21,8 @@ export class PolyrithmsComponent
   @ViewChild('canvas', { static: false })
   protected override canvas!: ElementRef<HTMLCanvasElement>;
 
-  @ViewChild('sound-toggle', { static: false })
-  protected soundToggle!: any;
-
-  toggles = {
-    sound: this.soundToggle,
-  };
-
-  private readonly colors = Array(21).fill('#A6C48A');
-  private arcs: any[] = [];
+  private readonly colors: string[] = Array(21).fill('#A6C48A');
+  private arcs: Arc[] = [];
   private settings: Settings = {
     startTime: new Date().getTime(), // This can be in the future
     duration: 900, // Total time for all dots to realign at the starting point
@@ -50,17 +31,40 @@ export class PolyrithmsComponent
     instrument: 'vibraphone',
   };
 
+  private polyMath!: PolyMath;
+
   constructor() {
     super();
   }
-
+  
   ngAfterViewInit(): void {
     this.setupCanvas();
-    this.init();
+    this.polyMath = new PolyMath(this.settings, this.colors, this.context);
+    this.initArcs();
   }
 
   ngOnDestroy(): void {
     this.disposeCanvas();
+  }
+
+  private initArcs() {
+    this.context.lineCap = 'round';
+
+    this.arcs = this.colors.map((color, index) => {
+      const velocity = this.polyMath.calculateVelocity(index);
+      const lastImpactTime = 0;
+      const nextImpactTime = this.polyMath.calculateNextImpactTime(
+        this.settings.startTime,
+        velocity
+      );
+
+      return {
+        color,
+        velocity,
+        lastImpactTime,
+        nextImpactTime,
+      } as Arc;
+    });
   }
 
   protected override draw(): void {
@@ -93,12 +97,12 @@ export class PolyrithmsComponent
       y: this.canvas.nativeElement.height / 2,
     };
 
-    const base: any = {
+    const base: Base = {
       length: end.x - start.x,
       minAngle: 0,
       startAngle: 0,
       maxAngle: 2 * Math.PI,
-    };
+    } as Base;
 
     base.initialRadius = base.length * 0.05;
     base.circleRadius = base.length * 0.006;
@@ -112,7 +116,7 @@ export class PolyrithmsComponent
       const radius = base.initialRadius + base.spacing * index;
 
       // Draw arcs
-      this.context.globalAlpha = this.determineOpacity(
+      this.context.globalAlpha = this.polyMath.determineOpacity(
         currentTime,
         arc.lastImpactTime,
         0.15,
@@ -124,7 +128,7 @@ export class PolyrithmsComponent
 
       const offset = (base.circleRadius * (5 / 3)) / radius;
 
-      this.drawArc(
+      this.polyMath.drawArc(
         center.x,
         center.y,
         radius,
@@ -132,10 +136,16 @@ export class PolyrithmsComponent
         2 * Math.PI - offset
       );
 
-      this.drawArc(center.x, center.y, radius, offset, Math.PI - offset);
+      this.polyMath.drawArc(
+        center.x,
+        center.y,
+        radius,
+        offset,
+        Math.PI - offset
+      );
 
       // Draw impact points
-      this.context.globalAlpha = this.determineOpacity(
+      this.context.globalAlpha = this.polyMath.determineOpacity(
         currentTime,
         arc.lastImpactTime,
         0.15,
@@ -144,9 +154,14 @@ export class PolyrithmsComponent
       );
       this.context.fillStyle = arc.color;
 
-      this.drawPointOnArc(center, radius, base.circleRadius * 0.75, Math.PI);
+      this.polyMath.drawPointOnArc(
+        center,
+        radius,
+        base.circleRadius * 0.75,
+        Math.PI
+      );
 
-      this.drawPointOnArc(
+      this.polyMath.drawPointOnArc(
         center,
         radius,
         base.circleRadius * 0.75,
@@ -158,9 +173,9 @@ export class PolyrithmsComponent
       this.context.fillStyle = arc.color;
 
       if (currentTime >= arc.nextImpactTime) {
-        this.playKey(index);
+        this.polyMath.playKey(index);
         arc.lastImpactTime = arc.nextImpactTime;
-        arc.nextImpactTime = this.calculateNextImpactTime(
+        arc.nextImpactTime = this.polyMath.calculateNextImpactTime(
           arc.nextImpactTime,
           arc.velocity
         );
@@ -169,126 +184,7 @@ export class PolyrithmsComponent
       const distance = elapsedTime >= 0 ? elapsedTime * arc.velocity : 0;
       const angle = (Math.PI + distance) % base.maxAngle;
 
-      this.drawPointOnArc(center, radius, base.circleRadius, angle);
+      this.polyMath.drawPointOnArc(center, radius, base.circleRadius, angle);
     });
-  }
-
-  private getFileName(index: number): string {
-    if (this.settings.instrument === 'default') return `key-${index}`;
-
-    return `${this.settings.instrument}-key-${index}`;
-  }
-
-  private getUrl(index: number): string {
-    return `https://assets.codepen.io/1468070/${this.getFileName(index)}.wav`;
-  }
-
-  keys: any[] = this.colors.map((_, index) => {
-    const audio = new Audio(this.getUrl(index));
-    audio.volume = 0.15;
-    return audio;
-  });
-
-  private playKey(index: number) {
-    this.keys[index].play();
-  }
-
-  private calculateVelocity(index: number): number {
-    const numberOfCycles = this.settings.maxCycles - index;
-    const distancePerCycle = 2 * Math.PI;
-    return (numberOfCycles * distancePerCycle) / this.settings.duration;
-  }
-
-  private calculateNextImpactTime(currentImpactTime: number, velocity: number) {
-    return currentImpactTime + (Math.PI / velocity) * 1000;
-  }
-
-  private calculateDynamicOpacity(
-    currentTime: number,
-    lastImpactTime: number,
-    baseOpacity: number,
-    maxOpacity: number,
-    duration: number
-  ) {
-    const timeSinceImpact = currentTime - lastImpactTime;
-    const percentage = Math.min(timeSinceImpact / duration, 1);
-    const opacityDelta = maxOpacity - baseOpacity;
-
-    return maxOpacity - opacityDelta * percentage;
-  }
-
-  private determineOpacity(
-    currentTime: number,
-    lastImpactTime: number,
-    baseOpacity: number,
-    maxOpacity: number,
-    duration: number
-  ) {
-    if (!this.settings.pulseEnabled) {
-      return baseOpacity;
-    }
-    return this.calculateDynamicOpacity(
-      currentTime,
-      lastImpactTime,
-      baseOpacity,
-      maxOpacity,
-      duration
-    );
-  }
-
-  private calculatePositionOnArc(center: Pos, radius: number, angle: number) {
-    return {
-      x: center.x + radius * Math.cos(angle),
-      y: center.y + radius * Math.sin(angle),
-    };
-  }
-
-  private init() {
-    this.context.lineCap = 'round';
-
-    this.arcs = this.colors.map((color, index) => {
-      const velocity = this.calculateVelocity(index);
-      const lastImpactTime = 0;
-      const nextImpactTime = this.calculateNextImpactTime(
-        this.settings.startTime,
-        velocity
-      );
-
-      return {
-        color,
-        velocity,
-        lastImpactTime,
-        nextImpactTime,
-      };
-    });
-  }
-
-  private drawArc(
-    x: number,
-    y: number,
-    radius: number,
-    start: number,
-    end: number,
-    action: string = 'stroke'
-  ) {
-    this.context.beginPath();
-
-    this.context.arc(x, y, radius, start, end);
-    if (action === 'stroke') {
-      this.context.stroke();
-    } else {
-      this.context.fill();
-    }
-  }
-
-  private drawPointOnArc(
-    center: Pos,
-    arcRadius: number,
-    pointRadius: number,
-    angle: number
-  ) {
-    const position = this.calculatePositionOnArc(center, arcRadius, angle);
-
-    this.drawArc(position.x, position.y, pointRadius, 0, 2 * Math.PI, 'fill');
   }
 }
