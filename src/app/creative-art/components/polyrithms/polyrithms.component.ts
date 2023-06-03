@@ -166,8 +166,8 @@ export class PolyrithmsComponent
         );
       }
 
-      const distance = elapsedTime >= 0 ? elapsedTime * arc.velocity : 0,
-        angle = (Math.PI + distance) % base.maxAngle;
+      const distance = elapsedTime >= 0 ? elapsedTime * arc.velocity : 0;
+      const angle = (Math.PI + distance) % base.maxAngle;
 
       this.drawPointOnArc(center, radius, base.circleRadius, angle);
     });
