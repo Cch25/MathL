@@ -47,7 +47,7 @@ export class PolyrithmsComponent
     duration: 900, // Total time for all dots to realign at the starting point
     maxCycles: Math.max(this.colors.length, 100), // Must be above colors.length or else...
     pulseEnabled: true, // Pulse will only show if sound is enabled as well
-    instrument: 'vibraphone', // "default" | "wave" | "vibraphone"
+    instrument: 'vibraphone',
   };
 
   constructor() {
@@ -59,7 +59,9 @@ export class PolyrithmsComponent
     this.init();
   }
 
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void {
+    this.disposeCanvas();
+  }
 
   protected override draw(): void {
     this.canvas.nativeElement.width = this.canvas.nativeElement.clientWidth;
@@ -158,7 +160,10 @@ export class PolyrithmsComponent
       if (currentTime >= arc.nextImpactTime) {
         this.playKey(index);
         arc.lastImpactTime = arc.nextImpactTime;
-        arc.nextImpactTime = this.calculateNextImpactTime(arc.nextImpactTime, arc.velocity);      
+        arc.nextImpactTime = this.calculateNextImpactTime(
+          arc.nextImpactTime,
+          arc.velocity
+        );
       }
 
       const distance = elapsedTime >= 0 ? elapsedTime * arc.velocity : 0,
